@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASUS ROG Strix Gaming Laptop - TechZone</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-microchip text-neon-green"></i>
+                <span class="ms-2">TechZone</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../index.html#contact">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cart">
+                            <i class="fas fa-shopping-cart text-neon-yellow"></i>
+                            <span class="badge bg-neon-green text-dark ms-1">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Product Header -->
+    <section class="product-header py-5" style="margin-top: 80px;">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="../index.html" class="text-neon-green">Home</a></li>
+                    <li class="breadcrumb-item"><a href="../index.html#products" class="text-neon-green">Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Gaming Laptop</li>
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Product Details -->
+    <section class="product-details py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Product Images -->
+                <div class="col-lg-6">
+                    <div class="product-gallery">
+                        <div class="main-image mb-3">
+                            <img src="../assets/test.jpg" alt="Gaming Laptop" class="img-fluid rounded">
+                        </div>
+                        <div class="thumbnail-images">
+                            <div class="row g-2">
+                                <div class="col-3">
+                                    <img src="https://via.placeholder.com/150x100/1a1a1a/00ff00?text=Front" alt="Front View" class="img-fluid rounded thumbnail-img">
+                                </div>
+                                <div class="col-3">
+                                    <img src="https://via.placeholder.com/150x100/1a1a1a/00ff00?text=Back" alt="Back View" class="img-fluid rounded thumbnail-img">
+                                </div>
+                                <div class="col-3">
+                                    <img src="https://via.placeholder.com/150x100/1a1a1a/00ff00?text=Side" alt="Side View" class="img-fluid rounded thumbnail-img">
+                                </div>
+                                <div class="col-3">
+                                    <img src="https://via.placeholder.com/150x100/1a1a1a/00ff00?text=Keyboard" alt="Keyboard View" class="img-fluid rounded thumbnail-img">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="col-lg-6">
+                    <div class="product-info">
+                        <h1 class="product-title mb-3">ASUS ROG Strix Gaming Laptop</h1>
+                        <div class="product-rating mb-3">
+                            <div class="stars">
+                                <i class="fas fa-star text-neon-yellow"></i>
+                                <i class="fas fa-star text-neon-yellow"></i>
+                                <i class="fas fa-star text-neon-yellow"></i>
+                                <i class="fas fa-star text-neon-yellow"></i>
+                                <i class="fas fa-star text-neon-yellow"></i>
+                            </div>
+                            <span class="rating-text ms-2">5.0 (128 reviews)</span>
+                        </div>
+                        
+                        <div class="product-price mb-4">
+                            <span class="current-price">$1,299</span>
+                            <span class="original-price">$1,499</span>
+                            <span class="discount-badge">Save $200</span>
+                        </div>
+
+                        <div class="product-description mb-4">
+                            <p>Experience ultimate gaming performance with the ASUS ROG Strix Gaming Laptop. Powered by the latest Intel Core i7 processor and NVIDIA RTX 4060 graphics, this beast delivers smooth gameplay at high frame rates. The 16GB RAM and 512GB SSD ensure lightning-fast loading times and seamless multitasking.</p>
+                        </div>
+
+                        <div class="product-actions mb-4">
+                            <div class="quantity-selector mb-3">
+                                <label class="form-label">Quantity:</label>
+                                <div class="input-group" style="max-width: 150px;">
+                                    <button class="btn btn-outline-neon-green" type="button" onclick="decreaseQuantity()">-</button>
+                                    <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="10">
+                                    <button class="btn btn-outline-neon-green" type="button" onclick="increaseQuantity()">+</button>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-neon-green btn-lg" onclick="addToCart()">
+                                    <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                </button>
+                                <button class="btn btn-outline-neon-yellow btn-lg">
+                                    <i class="fas fa-heart me-2"></i>Add to Wishlist
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="product-features">
+                            <h5 class="mb-3">Key Features:</h5>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check text-neon-green me-2"></i>NVIDIA RTX 4060 6GB GDDR6</li>
+                                <li><i class="fas fa-check text-neon-green me-2"></i>Intel Core i7-12700H Processor</li>
+                                <li><i class="fas fa-check text-neon-green me-2"></i>16GB DDR4 RAM</li>
+                                <li><i class="fas fa-check text-neon-green me-2"></i>512GB NVMe SSD</li>
+                                <li><i class="fas fa-check text-neon-green me-2"></i>15.6" FHD 144Hz Display</li>
+                                <li><i class="fas fa-check text-neon-green me-2"></i>RGB Backlit Keyboard</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Specifications -->
+    <section class="product-specs py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="section-title mb-5">Technical <span class="text-neon-green">Specifications</span></h2>
+                    
+                    <div class="specs-grid">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="spec-category">
+                                    <h4 class="spec-category-title text-neon-green mb-3">
+                                        <i class="fas fa-microchip me-2"></i>Processor
+                                    </h4>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Model:</span>
+                                        <span class="spec-value">Intel Core i7-12700H</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Cores:</span>
+                                        <span class="spec-value">14 (6P + 8E)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Base Clock:</span>
+                                        <span class="spec-value">2.3 GHz</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Max Turbo:</span>
+                                        <span class="spec-value">4.7 GHz</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="spec-category">
+                                    <h4 class="spec-category-title text-neon-yellow mb-3">
+                                        <i class="fas fa-tv me-2"></i>Graphics
+                                    </h4>
+                                    <div class="spec-item">
+                                        <span class="spec-label">GPU:</span>
+                                        <span class="spec-value">NVIDIA RTX 4060</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">VRAM:</span>
+                                        <span class="spec-value">6GB GDDR6</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Boost Clock:</span>
+                                        <span class="spec-value">2.4 GHz</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Ray Tracing:</span>
+                                        <span class="spec-value">Yes</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="spec-category">
+                                    <h4 class="spec-category-title text-neon-green mb-3">
+                                        <i class="fas fa-memory me-2"></i>Memory & Storage
+                                    </h4>
+                                    <div class="spec-item">
+                                        <span class="spec-label">RAM:</span>
+                                        <span class="spec-value">16GB DDR4-3200</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Storage:</span>
+                                        <span class="spec-value">512GB NVMe SSD</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">RAM Slots:</span>
+                                        <span class="spec-value">2 (Upgradeable)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Max RAM:</span>
+                                        <span class="spec-value">32GB</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="spec-category">
+                                    <h4 class="spec-category-title text-neon-yellow mb-3">
+                                        <i class="fas fa-desktop me-2"></i>Display
+                                    </h4>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Size:</span>
+                                        <span class="spec-value">15.6 inches</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Resolution:</span>
+                                        <span class="spec-value">1920 x 1080 (FHD)</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Refresh Rate:</span>
+                                        <span class="spec-value">144 Hz</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Panel Type:</span>
+                                        <span class="spec-value">IPS</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products -->
+    <section class="related-products py-5">
+        <div class="container">
+            <h2 class="section-title mb-5">Related <span class="text-neon-green">Products</span></h2>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/1a1a1a/ffff00?text=Gaming+Mouse" alt="Gaming Mouse" class="img-fluid">
+                            <div class="product-overlay">
+                                <a href="gaming-mouse.html" class="btn btn-neon-green">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Logitech G Pro X Superlight</h5>
+                            <p class="product-category">Gaming Mouse</p>
+                            <div class="product-price">
+                                <span class="current-price">$149</span>
+                                <span class="original-price">$179</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/1a1a1a/00ff00?text=Mechanical+Keyboard" alt="Mechanical Keyboard" class="img-fluid">
+                            <div class="product-overlay">
+                                <a href="mechanical-keyboard.html" class="btn btn-neon-green">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">Corsair K100 RGB</h5>
+                            <p class="product-category">Mechanical Keyboard</p>
+                            <div class="product-price">
+                                <span class="current-price">$229</span>
+                                <span class="original-price">$259</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/1a1a1a/ffff00?text=Gaming+Headset" alt="Gaming Headset" class="img-fluid">
+                            <div class="product-overlay">
+                                <a href="gaming-headset.html" class="btn btn-neon-green">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">SteelSeries Arctis Pro</h5>
+                            <p class="product-category">Gaming Headset</p>
+                            <div class="product-price">
+                                <span class="current-price">$179</span>
+                                <span class="original-price">$199</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://via.placeholder.com/300x200/1a1a1a/00ff00?text=Graphics+Card" alt="Graphics Card" class="img-fluid">
+                            <div class="product-overlay">
+                                <a href="graphics-card.html" class="btn btn-neon-green">View Details</a>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">NVIDIA RTX 4070 Ti</h5>
+                            <p class="product-category">Graphics Card</p>
+                            <div class="product-price">
+                                <span class="current-price">$799</span>
+                                <span class="original-price">$899</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <h5 class="footer-title">
+                        <i class="fas fa-microchip text-neon-green"></i>
+                        TechZone
+                    </h5>
+                    <p class="footer-text">
+                        Your trusted partner for premium computer hardware and gaming equipment.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="footer-subtitle">Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="../index.html#home">Home</a></li>
+                        <li><a href="../index.html#products">Products</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                        <li><a href="../index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="footer-subtitle">Categories</h6>
+                    <ul class="footer-links">
+                        <li><a href="#">Gaming Laptops</a></li>
+                        <li><a href="#">Graphics Cards</a></li>
+                        <li><a href="#">Gaming Peripherals</a></li>
+                        <li><a href="#">PC Components</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3">
+                    <h6 class="footer-subtitle">Contact Info</h6>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt text-neon-green"></i> 123 Tech Street, Digital City</p>
+                        <p><i class="fas fa-phone text-neon-green"></i> +1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope text-neon-green"></i> info@techzone.com</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="footer-copyright">
+                        &copy; 2024 TechZone. All rights reserved. | Designed with <i class="fas fa-heart text-neon-green"></i> for gamers
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    
+    <!-- Product Page JS -->
+    <script>
+        // Quantity selector functionality
+        function decreaseQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput.value > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        }
+
+        function increaseQuantity() {
+            const quantityInput = document.getElementById('quantity');
+            if (quantityInput.value < 10) {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+            }
+        }
+
+        // Add to cart functionality
+        function addToCart() {
+            const quantity = document.getElementById('quantity').value;
+            const productName = 'ASUS ROG Strix Gaming Laptop';
+            const price = 1299;
+            
+            // Call the global addToCart function
+            if (typeof window.addToCart === 'function') {
+                window.addToCart('laptop-001', productName, price);
+            }
+            
+            // Show success message
+            showNotification(`${quantity}x ${productName} added to cart!`, 'success');
+        }
+
+        // Thumbnail image click functionality
+        document.querySelectorAll('.thumbnail-img').forEach(img => {
+            img.addEventListener('click', function() {
+                const mainImage = document.querySelector('.main-image img');
+                mainImage.src = this.src;
+                
+                // Update alt text
+                mainImage.alt = this.alt;
+                
+                // Add active class to clicked thumbnail
+                document.querySelectorAll('.thumbnail-img').forEach(thumb => thumb.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add active class to first thumbnail
+        document.querySelector('.thumbnail-img').classList.add('active');
+    </script>
+</body>
+</html> 
