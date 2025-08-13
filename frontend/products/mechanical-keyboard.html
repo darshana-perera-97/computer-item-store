@@ -439,6 +439,9 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- Configuration JS -->
+    <script src="../js/config.js"></script>
+    
     <!-- Custom JS -->
     <script src="../js/main.js"></script>
     
@@ -474,23 +477,374 @@
             showNotification(`${quantity}x ${productName} added to cart!`, 'success');
         }
 
-        // Thumbnail image click functionality
-        document.querySelectorAll('.thumbnail-img').forEach(img => {
-            img.addEventListener('click', function() {
-                const mainImage = document.querySelector('.main-image img');
-                mainImage.src = this.src;
-                
-                // Update alt text
-                mainImage.alt = this.alt;
-                
-                // Add active class to clicked thumbnail
-                document.querySelectorAll('.thumbnail-img').forEach(thumb => thumb.classList.remove('active'));
-                this.classList.add('active');
-            });
+        // Initialize product order form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initProductOrderForm();
+            initThumbnails();
         });
 
-        // Add active class to first thumbnail
-        document.querySelector('.thumbnail-img').classList.add('active');
+        function initProductOrderForm() {
+            // Get the Buy Now button
+            const buyNowBtn = document.querySelector('.buy-now-btn');
+            if (buyNowBtn) {
+                buyNowBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Get product details
+                    const productName = 'Corsair K100 RGB';
+                    const productPrice = 229;
+                    const productCategory = 'Mechanical Keyboard';
+                    
+                    // Populate order form with product details
+                    populateProductOrderForm(productName, productPrice, productCategory);
+                    
+                    // Show the order modal
+                    const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+                    orderModal.show();
+                });
+            }
+            
+            // Handle order form submission
+            const orderForm = document.getElementById('orderForm');
+            if (orderForm) {
+                orderForm.addEventListener('submit', handleProductOrderSubmission);
+            }
+        }
+
+        function populateProductOrderForm(productName, productPrice, productCategory) {
+            // Update order summary in the form
+            const itemNameElement = document.querySelector('.item-name');
+            const itemPriceElement = document.querySelector('.item-price');
+            const orderTotalElement = document.querySelector('.order-total strong');
+            
+            if (itemNameElement) itemNameElement.textContent = productName;
+            if (itemPriceElement) itemPriceElement.textContent = `$${productPrice}`;
+            if (orderTotalElement) orderTotalElement.textContent = `Total: $${productPrice}`;
+            
+            // Store product details for form submission
+            document.getElementById('orderForm').setAttribute('data-product-name', productName);
+            document.getElementById('orderForm').setAttribute('data-product-price', productPrice);
+            document.getElementById('orderForm').setAttribute('data-product-category', productCategory);
+        }
+
+        function handleProductOrderSubmission(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(e.target);
+            const orderData = {
+                product: {
+                    name: e.target.getAttribute('data-product-name'),
+                    price: e.target.getAttribute('data-product-price'),
+                    category: e.target.getAttribute('data-product-category')
+                },
+                customer: {
+                    firstName: formData.get('firstName') || document.getElementById('firstName').value,
+                    lastName: formData.get('lastName') || document.getElementById('lastName').value,
+                    email: formData.get('email') || document.getElementById('email').value,
+                    phone: formData.get('phone') || document.getElementById('phone').value
+                },
+                delivery: {
+                    address: formData.get('address') || document.getElementById('address').value,
+                    city: formData.get('city') || document.getElementById('city').value,
+                    state: formData.get('state') || document.getElementById('state').value,
+                    zipCode: formData.get('zipCode') || document.getElementById('zipCode').value,
+                    country: formData.get('country') || document.getElementById('country').value
+                },
+                notes: formData.get('notes') || document.getElementById('notes').value,
+                termsAccepted: document.getElementById('termsAccepted').checked
+            };
+            
+            // Validate required fields
+            if (!validateProductOrderForm(orderData)) {
+                showNotification('Please fill in all required fields and accept terms & conditions.', 'error');
+                return;
+            }
+            
+            // Show order preview
+            showProductOrderPreview(orderData);
+        }
+
+        function showProductOrderPreview(orderData) {
+            // Create preview modal content
+            const previewContent = `
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-eye me-2"></i>Order Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-preview">
+                        <!-- Product Details -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-box me-2 text-primary"></i>Product Details
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Product:</strong> ${orderData.product.name}</p>
+                                <p><strong>Price:</strong> $${orderData.product.price}</p>
+                                <p><strong>Category:</strong> ${orderData.product.category}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-user me-2 text-success"></i>Customer Information
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Name:</strong> ${orderData.customer.firstName} ${orderData.customer.lastName}</p>
+                                <p><strong>Email:</strong> ${orderData.customer.email}</p>
+                                <p><strong>Phone:</strong> ${orderData.customer.phone}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Address -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-map-marker-alt me-2 text-warning"></i>Delivery Address
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Address:</strong> ${orderData.delivery.address}</p>
+                                <p><strong>City:</strong> ${orderData.delivery.city}</p>
+                                <p><strong>State:</strong> ${orderData.delivery.state}</p>
+                                <p><strong>ZIP:</strong> ${orderData.delivery.zipCode}</p>
+                                <p><strong>Country:</strong> ${orderData.delivery.country}</p>
+                            </div>
+                        </div>
+                        
+                        ${orderData.notes ? `
+                        <!-- Additional Notes -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-sticky-note me-2 text-info"></i>Additional Notes
+                            </h6>
+                            <div class="preview-content">
+                                <p>${orderData.notes}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <!-- Order Summary -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-calculator me-2 text-danger"></i>Order Summary
+                            </h6>
+                            <div class="preview-content">
+                                <div class="order-total-preview">
+                                    <h5 class="text-primary">Total: $${orderData.product.price}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="goBackToProductForm()">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Form
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="placeProductOrder(${JSON.stringify(orderData).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-check me-2"></i>Place Order
+                    </button>
+                </div>
+            `;
+            
+            // Update modal content
+            const orderModal = document.getElementById('orderModal');
+            orderModal.querySelector('.modal-content').innerHTML = previewContent;
+            
+            // Show the preview
+            const modal = new bootstrap.Modal(orderModal);
+            modal.show();
+        }
+
+        function placeProductOrder(orderData) {
+            // Show loading state
+            const placeOrderBtn = document.querySelector('.btn-success');
+            const originalText = placeOrderBtn.innerHTML;
+            placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order...';
+            placeOrderBtn.disabled = true;
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Reset button
+                placeOrderBtn.innerHTML = originalText;
+                placeOrderBtn.disabled = false;
+                
+                // Show success message
+                showProductOrderSuccess(orderData);
+                
+            }, 2000);
+        }
+
+        function showProductOrderSuccess(orderData) {
+            // Create success modal content
+            const successContent = `
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>Order Placed Successfully!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="order-success">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <h4 class="text-success mb-3">Thank You! 🎊</h4>
+                        <p class="mb-3 text-muted">Welcome to the TechZone family!</p>
+                        <p class="mb-3">Your order for <strong>${orderData.product.name}</strong> has been placed successfully!</p>
+                        <p class="mb-3">🎉 <strong>Great news!</strong> Our sales team has been notified and will contact you soon to confirm your order and discuss delivery options.</p>
+                        <p class="mb-3">📞 <strong>What happens next?</strong> You'll receive a call within the next 2-4 hours during business hours (9 AM - 6 PM).</p>
+                        
+                        <div class="order-details-summary mt-4">
+                            <h6 class="text-muted">Order Summary:</h6>
+                            <p><strong>Product:</strong> ${orderData.product.name}</p>
+                            <p><strong>Total:</strong> $${orderData.product.price}</p>
+                            <p><strong>Order ID:</strong> ${generateProductOrderId()}</p>
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Next Steps:</strong><br>
+                            1. 📞 <strong>Sales team will call you</strong> within 2-4 hours<br>
+                            2. 💳 <strong>Payment confirmation</strong> and order verification<br>
+                            3. 🚚 <strong>Delivery scheduling</strong> based on your preference<br>
+                            4. 📱 <strong>WhatsApp updates</strong> for tracking and status
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>Redirecting to home page in <span id="countdown">5</span> seconds...</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="redirectToHome()">
+                        <i class="fas fa-home me-2"></i>Go to Home Now
+                    </button>
+                </div>
+            `;
+            
+            // Update modal content
+            const orderModal = document.getElementById('orderModal');
+            orderModal.querySelector('.modal-content').innerHTML = successContent;
+            
+            // Show the success message
+            const modal = new bootstrap.Modal(orderModal);
+            modal.show();
+            
+            // Start countdown and auto-redirect
+            startCountdownAndRedirect();
+        }
+
+        function generateProductOrderId() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 5);
+            return `ORD-${timestamp}-${random}`.toUpperCase();
+        }
+
+        function validateProductOrderForm(orderData) {
+            // Check if all required fields are filled
+            const requiredFields = [
+                orderData.customer.firstName,
+                orderData.customer.lastName,
+                orderData.customer.email,
+                orderData.customer.phone,
+                orderData.delivery.address,
+                orderData.delivery.city,
+                orderData.delivery.state,
+                orderData.delivery.zipCode,
+                orderData.delivery.country
+            ];
+            
+            return requiredFields.every(field => field && field.trim() !== '') && orderData.termsAccepted;
+        }
+
+        function goBackToProductForm() {
+            // Reload the page to show the original form
+            location.reload();
+        }
+
+        // Initialize thumbnail functionality
+        function initThumbnails() {
+            // Thumbnail image click functionality
+            document.querySelectorAll('.thumbnail-img').forEach(img => {
+                img.addEventListener('click', function() {
+                    const mainImage = document.querySelector('.main-image img');
+                    if (mainImage) {
+                        mainImage.src = this.src;
+                        
+                        // Update alt text
+                        mainImage.alt = this.alt;
+                    }
+                    
+                    // Add active class to clicked thumbnail
+                    document.querySelectorAll('.thumbnail-img').forEach(thumb => thumb.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Add active class to first thumbnail
+            const firstThumbnail = document.querySelector('.thumbnail-img');
+            if (firstThumbnail) {
+                firstThumbnail.classList.add('active');
+            }
+        }
+
+        // Make functions globally available
+        window.goBackToProductForm = goBackToProductForm;
+        window.placeProductOrder = placeProductOrder;
+        
+        // Function to redirect to home page
+        function redirectToHome() {
+            window.location.href = '../index.html';
+        }
+        
+        // Function to start countdown and auto-redirect
+        function startCountdownAndRedirect() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+            
+            if (countdownElement) {
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    countdownElement.textContent = countdown;
+                    
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        redirectToHome();
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Make redirectToHome globally available
+        window.redirectToHome = redirectToHome;
+        
+        // Local showNotification function
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Make showNotification globally available
+        window.showNotification = showNotification;
     </script>
 
     <!-- Order Form Modal -->
