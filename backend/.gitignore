@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+# whatsapp data
+session-computer-store-whatsapp
+.wwebjs_cache
+
 # testing
 /coverage
 

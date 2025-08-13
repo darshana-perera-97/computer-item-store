@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "whatsapp-auth": "node scripts/whatsapp-auth.js",
+    "whatsapp-cli": "node scripts/whatsapp-cli.js",
+    "test-whatsapp": "node scripts/test-whatsapp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,9 +15,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "axios": "^1.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.32.0"
   }
 }
