@@ -50,6 +50,51 @@ h1, h2, h3, h4, h5, h6 {
     text-shadow: var(--neon-green-glow);
 }
 
+/* Breadcrumb Navigation */
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.breadcrumb-item {
+    color: var(--text-secondary);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: var(--secondary-color);
+    font-weight: bold;
+    margin: 0 0.5rem;
+}
+
+.breadcrumb-item a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+    color: #ffff80;
+    text-shadow: 0 0 10px rgba(255, 255, 0, 0.6);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Text Utility Classes */
+.text-neon-green {
+    color: var(--primary-color) !important;
+}
+
+.text-neon-yellow {
+    color: var(--secondary-color) !important;
+}
+
 /* Navigation */
 .navbar {
     background-color: rgba(5, 5, 5, 0.95);
