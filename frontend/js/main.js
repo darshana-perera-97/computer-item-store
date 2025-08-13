@@ -1,4 +1,29 @@
 // Main JavaScript for TechZone - CodeBlast Style
+
+// Ensure CONFIG is available before proceeding
+if (typeof CONFIG === 'undefined') {
+    console.error('CONFIG is not defined. Please ensure config.js is loaded before main.js');
+    // Wait a bit and check again
+    setTimeout(() => {
+        if (typeof CONFIG === 'undefined') {
+            console.error('CONFIG still not available after delay. Check script loading order.');
+            // Create fallback configuration
+            window.CONFIG = {
+                BACKEND_URL: 'http://localhost:3060',
+                API_ENDPOINTS: {
+                    AUTH: '/api/auth',
+                    COMPUTER_ITEMS: '/api/computer-items',
+                    ORDERS: '/api/orders',
+                    WHATSAPP: '/api/whatsapp'
+                },
+                APP_NAME: 'Computer Item Store',
+                VERSION: '1.0.0'
+            };
+            console.log('Fallback configuration created');
+        }
+    }, 1000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Navbar scroll effect
@@ -239,7 +264,56 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Utility functions
-    function isValidEmail(email) {
+
+// Safe configuration getter
+function getConfigValue(key, defaultValue = '') {
+    if (typeof CONFIG !== 'undefined' && CONFIG[key] !== undefined) {
+        return CONFIG[key];
+    }
+    return defaultValue;
+}
+
+// Check if configuration system is ready
+function isConfigReady() {
+    return typeof CONFIG !== 'undefined' && CONFIG.BACKEND_URL;
+}
+
+// Wait for configuration to be ready
+function waitForConfig(callback, maxWaitTime = 5000) {
+    if (isConfigReady()) {
+        callback();
+        return;
+    }
+    
+    const startTime = Date.now();
+    const checkInterval = setInterval(() => {
+        if (isConfigReady()) {
+            clearInterval(checkInterval);
+            callback();
+        } else if (Date.now() - startTime > maxWaitTime) {
+            clearInterval(checkInterval);
+            console.error('Configuration system not ready after timeout');
+            // Try to create fallback config
+            if (typeof CONFIG === 'undefined') {
+                window.CONFIG = {
+                    BACKEND_URL: 'http://localhost:3060',
+                    API_ENDPOINTS: {
+                        AUTH: '/api/auth',
+                        COMPUTER_ITEMS: '/api/computer-items',
+                        ORDERS: '/api/orders',
+                        WHATSAPP: '/api/whatsapp'
+                    },
+                    APP_NAME: 'Computer Item Store',
+                    VERSION: '1.0.0'
+                };
+                console.log('Fallback configuration created in waitForConfig');
+            }
+            callback();
+        }
+    }, 100);
+}
+
+function isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
@@ -353,9 +427,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Order Form Functionality
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize order form functionality
-    initOrderForm();
+    // Initialize configuration system
+    initConfiguration();
+    
+    // Wait for CONFIG to be available
+    if (typeof CONFIG === 'undefined') {
+        console.log('Waiting for CONFIG to be available...');
+        setTimeout(() => {
+            if (typeof CONFIG !== 'undefined') {
+                console.log('CONFIG is now available, initializing order form...');
+                initOrderForm();
+            } else {
+                console.error('CONFIG still not available after timeout');
+                // Create fallback config and continue
+                createFallbackConfig();
+                initOrderForm();
+            }
+        }, 500);
+    } else {
+        // Initialize order form functionality
+        initOrderForm();
+    }
 });
+
+// Initialize configuration system
+function initConfiguration() {
+    console.log('Initializing configuration system...');
+    
+    // Check if CONFIG is already available
+    if (typeof CONFIG !== 'undefined') {
+        console.log('CONFIG is already available');
+        return;
+    }
+    
+    // Wait for CONFIG to be loaded
+    waitForConfig(() => {
+        console.log('Configuration system ready');
+    }, 3000);
+}
+
+// Create fallback configuration
+function createFallbackConfig() {
+    console.log('Creating fallback configuration...');
+    window.CONFIG = {
+        BACKEND_URL: 'http://localhost:3060',
+        API_ENDPOINTS: {
+            AUTH: '/api/auth',
+            COMPUTER_ITEMS: '/api/computer-items',
+            ORDERS: '/api/orders',
+            WHATSAPP: '/api/whatsapp'
+        },
+        APP_NAME: 'Computer Item Store',
+        VERSION: '1.0.0'
+    };
+    console.log('Fallback configuration created');
+}
 
 function initOrderForm() {
     // Get all buy now buttons
@@ -535,12 +661,21 @@ function showOrderPreview(orderData) {
     modal.show();
 }
 
-function goBackToForm() {
+// Global function wrapper to ensure availability
+window.goBackToForm = function() {
     // Reload the page to show the original form
     location.reload();
-}
+};
 
-function placeOrder(orderData) {
+// Global function wrapper to ensure availability
+window.placeOrder = function(orderData) {
+    // Check if CONFIG is available
+    if (typeof CONFIG === 'undefined') {
+        console.error('CONFIG is not defined. Please ensure config.js is loaded before main.js');
+        showNotification('Configuration error. Please refresh the page and try again.', 'error');
+        return;
+    }
+    
     // Show loading state
     const placeOrderBtn = document.querySelector('.btn-success');
     const originalText = placeOrderBtn.innerHTML;
@@ -548,7 +683,10 @@ function placeOrder(orderData) {
     placeOrderBtn.disabled = true;
     
     // Send order to backend
-    fetch('http://localhost:3060/api/orders/submit', {
+    const backendUrl = CONFIG.BACKEND_URL || 'http://localhost:3060';
+    const ordersEndpoint = CONFIG.API_ENDPOINTS?.ORDERS || '/api/orders';
+    
+    fetch(backendUrl + ordersEndpoint + '/submit', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -573,6 +711,32 @@ function placeOrder(orderData) {
         placeOrderBtn.innerHTML = originalText;
         placeOrderBtn.disabled = false;
     });
+};
+
+// Ensure placeOrder is available globally
+console.log('placeOrder function bound to window object');
+
+// Function to redirect to home page
+function redirectToHome() {
+    window.location.href = '/';
+}
+
+// Function to start countdown and auto-redirect
+function startCountdownAndRedirect() {
+    let countdown = 5;
+    const countdownElement = document.getElementById('countdown');
+    
+    if (countdownElement) {
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                redirectToHome();
+            }
+        }, 1000);
+    }
 }
 
 function showOrderSuccess(orderData) {
@@ -587,9 +751,11 @@ function showOrderSuccess(orderData) {
         <div class="modal-body text-center">
             <div class="order-success">
                 <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
-                <h4 class="text-success mb-3">Thank You!</h4>
-                <p class="mb-3">Your order for <strong>${orderData.product.name}</strong> has been placed successfully.</p>
-                <p class="mb-3">We have sent a WhatsApp message to our team and they will contact you soon with delivery details.</p>
+                <h4 class="text-success mb-3">Thank You! 🎊</h4>
+                <p class="mb-3 text-muted">Welcome to the TechZone family!</p>
+                <p class="mb-3">Your order for <strong>${orderData.product.name}</strong> has been placed successfully!</p>
+                <p class="mb-3">🎉 <strong>Great news!</strong> Our sales team has been notified and will contact you soon to confirm your order and discuss delivery options.</p>
+                <p class="mb-3">📞 <strong>What happens next?</strong> You'll receive a call within the next 2-4 hours during business hours (9 AM - 6 PM).</p>
                 
                 <div class="order-details-summary mt-4">
                     <h6 class="text-muted">Order Summary:</h6>
@@ -601,16 +767,21 @@ function showOrderSuccess(orderData) {
                 <div class="alert alert-info mt-4">
                     <i class="fas fa-info-circle me-2"></i>
                     <strong>Next Steps:</strong><br>
-                    1. Our team will review your order<br>
-                    2. You'll receive a confirmation call<br>
-                    3. Delivery will be scheduled<br>
-                    4. You'll get tracking information
+                    1. 📞 <strong>Sales team will call you</strong> within 2-4 hours<br>
+                    2. 💳 <strong>Payment confirmation</strong> and order verification<br>
+                    3. 🚚 <strong>Delivery scheduling</strong> based on your preference<br>
+                    4. 📱 <strong>WhatsApp updates</strong> for tracking and status
+                </div>
+                
+                <div class="alert alert-warning mt-3">
+                    <i class="fas fa-clock me-2"></i>
+                    <strong>Redirecting to home page in <span id="countdown">5</span> seconds...</strong>
                 </div>
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                <i class="fas fa-home me-2"></i>Continue Shopping
+            <button type="button" class="btn btn-primary" onclick="redirectToHome()">
+                <i class="fas fa-home me-2"></i>Go to Home Now
             </button>
         </div>
     `;
@@ -622,6 +793,9 @@ function showOrderSuccess(orderData) {
     // Show the success message
     const modal = new bootstrap.Modal(orderModal);
     modal.show();
+    
+    // Start countdown and auto-redirect
+    startCountdownAndRedirect();
 }
 
 function generateOrderId() {
@@ -676,7 +850,12 @@ function processOrder(orderData) {
     }, 2000);
 }
 
-function showNotification(message, type = 'info') {
+// Global function wrapper to ensure availability
+window.redirectToHome = function() {
+    window.location.href = '/';
+};
+
+window.showNotification = function(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show position-fixed`;
@@ -695,7 +874,7 @@ function showNotification(message, type = 'info') {
             notification.remove();
         }
     }, 5000);
-} 
+}; 
 
 // Product Image Carousel Functionality
 document.addEventListener('DOMContentLoaded', function() {
@@ -820,4 +999,29 @@ function initProductCarousel() {
             
         }, 100);
     });
-} 
+}
+
+// Ensure all required functions are available globally
+function ensureGlobalFunctions() {
+    console.log('Ensuring global functions are available...');
+    
+    // Check if all required functions are available
+    const requiredFunctions = ['placeOrder', 'goBackToForm', 'showNotification'];
+    const missingFunctions = requiredFunctions.filter(func => typeof window[func] === 'undefined');
+    
+    if (missingFunctions.length > 0) {
+        console.warn('Missing global functions:', missingFunctions);
+    } else {
+        console.log('All required global functions are available');
+    }
+    
+    // Check if CONFIG is available
+    if (typeof CONFIG !== 'undefined') {
+        console.log('CONFIG is available:', CONFIG.BACKEND_URL);
+    } else {
+        console.warn('CONFIG is not available');
+    }
+}
+
+// Call this function when the page is fully loaded
+window.addEventListener('load', ensureGlobalFunctions); 
