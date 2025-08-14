@@ -3,7 +3,8 @@
 
 const CONFIG = {
     // Backend API configuration
-    BACKEND_URL: 'http://localhost:3060', // Change this to your actual backend URL
+    // BACKEND_URL: 'http://localhost:3060', // Change this to your actual backend URL
+    BACKEND_URL: 'http://69.197.187.24:3060', // Change this to your actual backend URL
     
     // API endpoints
     API_ENDPOINTS: {
