@@ -9,7 +9,8 @@ if (typeof CONFIG === 'undefined') {
             console.error('CONFIG still not available after delay. Check script loading order.');
             // Create fallback configuration
             window.CONFIG = {
-                BACKEND_URL: 'http://localhost:3060',
+                BACKEND_URL: 'http://69.197.187.24:3060',
+                // BACKEND_URL: 'http://localhost:3060',
                 API_ENDPOINTS: {
                     AUTH: '/api/auth',
                     COMPUTER_ITEMS: '/api/computer-items',
@@ -296,7 +297,8 @@ function waitForConfig(callback, maxWaitTime = 5000) {
             // Try to create fallback config
             if (typeof CONFIG === 'undefined') {
                 window.CONFIG = {
-                    BACKEND_URL: 'http://localhost:3060',
+                    BACKEND_URL: 'http://69.197.187.24:3060',
+                    // BACKEND_URL: 'http://localhost:3060',
                     API_ENDPOINTS: {
                         AUTH: '/api/auth',
                         COMPUTER_ITEMS: '/api/computer-items',
@@ -470,7 +472,8 @@ function initConfiguration() {
 function createFallbackConfig() {
     console.log('Creating fallback configuration...');
     window.CONFIG = {
-        BACKEND_URL: 'http://localhost:3060',
+        BACKEND_URL: 'http://69.197.187.24:3060',
+        // BACKEND_URL: 'http://localhost:3060',
         API_ENDPOINTS: {
             AUTH: '/api/auth',
             COMPUTER_ITEMS: '/api/computer-items',
@@ -683,7 +686,8 @@ window.placeOrder = function(orderData) {
     placeOrderBtn.disabled = true;
     
     // Send order to backend
-    const backendUrl = CONFIG.BACKEND_URL || 'http://localhost:3060';
+    const backendUrl = CONFIG.BACKEND_URL || 'http://69.197.187.24:3060';
+    // const backendUrl = CONFIG.BACKEND_URL || 'http://localhost:3060';
     const ordersEndpoint = CONFIG.API_ENDPOINTS?.ORDERS || '/api/orders';
     
     fetch(backendUrl + ordersEndpoint + '/submit', {

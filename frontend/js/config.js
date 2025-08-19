@@ -5,7 +5,7 @@ const CONFIG = {
     // Backend API configuration
     // BACKEND_URL: 'http://localhost:3060', // Change this to your actual backend URL
     BACKEND_URL: 'http://69.197.187.24:3060', // Change this to your actual backend URL
-    
+
     // API endpoints
     API_ENDPOINTS: {
         AUTH: '/api/auth',
@@ -13,7 +13,7 @@ const CONFIG = {
         ORDERS: '/api/orders',
         WHATSAPP: '/api/whatsapp'
     },
-    
+
     // Other configuration constants can be added here
     APP_NAME: 'Computer Item Store',
     VERSION: '1.0.0'
