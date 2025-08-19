@@ -693,7 +693,7 @@
             placeOrderBtn.disabled = true;
 
             // Send order to backend
-            const backendUrl = CONFIG.BACKEND_URL || 'http://localhost:3060';
+            const backendUrl = CONFIG.BACKEND_URL;
             const ordersEndpoint = CONFIG.API_ENDPOINTS?.ORDERS || '/api/orders';
 
             fetch(backendUrl + ordersEndpoint + '/submit', {
