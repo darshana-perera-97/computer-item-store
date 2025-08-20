@@ -464,6 +464,516 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Configuration JS -->
+    <script src="../js/config.js"></script>
+
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+
+    <!-- Product Page JS -->
+    <script>
+        // Wait for DOM and configuration to be ready
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize order form functionality
+            initProductOrderForm();
+
+            // Initialize thumbnail functionality
+            initThumbnails();
+        });
+
+        // Initialize order form functionality
+        function initProductOrderForm() {
+            console.log('Initializing product order form...');
+
+            // Get the buy now button
+            const buyNowBtn = document.querySelector('.buy-now-btn');
+            if (buyNowBtn) {
+                buyNowBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    console.log('Buy Now button clicked');
+
+                    // Get product details from button data attributes
+                    const productName = this.getAttribute('data-product');
+                    const productPrice = this.getAttribute('data-price');
+                    const productCategory = this.getAttribute('data-category');
+
+                    console.log('Product details:', { productName, productPrice, productCategory });
+
+                    // Populate order form with product details
+                    populateProductOrderForm(productName, productPrice, productCategory);
+
+                    // Show the order modal
+                    const orderModal = new bootstrap.Modal(document.getElementById('orderModal'));
+                    orderModal.show();
+                });
+            }
+
+            // Handle order form submission
+            const orderForm = document.getElementById('orderForm');
+            if (orderForm) {
+                orderForm.addEventListener('submit', handleProductOrderSubmission);
+            }
+        }
+
+        // Populate order form with product details
+        function populateProductOrderForm(productName, productPrice, productCategory) {
+            // Update order summary in the form
+            const itemNameElement = document.querySelector('.item-name');
+            const itemPriceElement = document.querySelector('.item-price');
+            const orderTotalElement = document.querySelector('.order-total strong');
+
+            if (itemNameElement) itemNameElement.textContent = productName;
+            if (itemPriceElement) itemPriceElement.textContent = `$${productPrice}`;
+            if (orderTotalElement) orderTotalElement.textContent = `Total: $${productPrice}`;
+
+            // Store product details for form submission
+            document.getElementById('orderForm').setAttribute('data-product-name', productName);
+            document.getElementById('orderForm').setAttribute('data-product-price', productPrice);
+            document.getElementById('orderForm').setAttribute('data-product-category', productCategory);
+        }
+
+        // Handle order form submission
+        function handleProductOrderSubmission(e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(e.target);
+            const orderData = {
+                product: {
+                    name: e.target.getAttribute('data-product-name'),
+                    price: e.target.getAttribute('data-product-price'),
+                    category: e.target.getAttribute('data-product-category')
+                },
+                customer: {
+                    firstName: formData.get('firstName') || document.getElementById('firstName').value,
+                    lastName: formData.get('lastName') || document.getElementById('lastName').value,
+                    email: formData.get('email') || document.getElementById('email').value,
+                    phone: formData.get('phone') || document.getElementById('phone').value
+                },
+                delivery: {
+                    address: formData.get('address') || document.getElementById('address').value,
+                    city: formData.get('city') || document.getElementById('city').value,
+                    state: formData.get('state') || document.getElementById('state').value,
+                    zipCode: formData.get('zipCode') || document.getElementById('zipCode').value,
+                    country: formData.get('country') || document.getElementById('country').value
+                },
+                notes: formData.get('notes') || document.getElementById('notes').value,
+                termsAccepted: document.getElementById('termsAccepted').checked
+            };
+
+            // Validate required fields
+            if (!validateProductOrderForm(orderData)) {
+                showNotification('Please fill in all required fields and accept terms & conditions.', 'error');
+                return;
+            }
+
+            // Show order preview
+            showProductOrderPreview(orderData);
+        }
+
+        // Show order preview
+        function showProductOrderPreview(orderData) {
+            // Create preview modal content
+            const previewContent = `
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-eye me-2"></i>Order Preview
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="order-preview">
+                        <!-- Product Details -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-box me-2 text-primary"></i>Product Details
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Product:</strong> ${orderData.product.name}</p>
+                                <p><strong>Price:</strong> $${orderData.product.price}</p>
+                                <p><strong>Category:</strong> ${orderData.product.category}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Customer Information -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-user me-2 text-success"></i>Customer Information
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Name:</strong> ${orderData.customer.firstName} ${orderData.customer.lastName}</p>
+                                <p><strong>Email:</strong> ${orderData.customer.email}</p>
+                                <p><strong>Phone:</strong> ${orderData.customer.phone}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Address -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-map-marker-alt me-2 text-warning"></i>Delivery Address
+                            </h6>
+                            <div class="preview-content">
+                                <p><strong>Address:</strong> ${orderData.delivery.address}</p>
+                                <p><strong>City:</strong> ${orderData.delivery.city}</p>
+                                <p><strong>State:</strong> ${orderData.delivery.state}</p>
+                                <p><strong>ZIP:</strong> ${orderData.delivery.zipCode}</p>
+                                <p><strong>Country:</strong> ${orderData.delivery.country}</p>
+                            </div>
+                        </div>
+                        
+                        ${orderData.notes ? `
+                        <!-- Additional Notes -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-sticky-note me-2 text-info"></i>Additional Notes
+                            </h6>
+                            <div class="preview-content">
+                                <p>${orderData.notes}</p>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <!-- Order Summary -->
+                        <div class="preview-section mb-4">
+                            <h6 class="preview-section-title">
+                                <i class="fas fa-calculator me-2 text-danger"></i>Order Summary
+                            </h6>
+                            <div class="preview-content">
+                                <div class="order-total-preview">
+                                    <h5 class="text-primary">Total: $${orderData.product.price}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="goBackToProductForm()">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Form
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="placeProductOrder(${JSON.stringify(orderData).replace(/"/g, '&quot;')})">
+                        <i class="fas fa-check me-2"></i>Place Order
+                    </button>
+                </div>
+            `;
+
+            // Update modal content
+            const orderModal = document.getElementById('orderModal');
+            orderModal.querySelector('.modal-content').innerHTML = previewContent;
+
+            // Show the preview
+            const modal = new bootstrap.Modal(orderModal);
+            modal.show();
+        }
+
+        // Go back to form
+        window.goBackToProductForm = function () {
+            // Reload the page to show the original form
+            location.reload();
+        };
+
+        // Place product order
+        window.placeProductOrder = function (orderData) {
+            console.log('Placing product order:', orderData);
+
+            // Check if CONFIG is available
+            if (typeof CONFIG === 'undefined') {
+                console.error('CONFIG is not defined');
+                showNotification('Configuration error. Please refresh the page and try again.', 'error');
+                return;
+            }
+
+            // Show loading state
+            const placeOrderBtn = document.querySelector('.btn-success');
+            const originalText = placeOrderBtn.innerHTML;
+            placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order...';
+            placeOrderBtn.disabled = true;
+
+            // Send order to backend
+            const backendUrl = CONFIG.BACKEND_URL;
+            const ordersEndpoint = CONFIG.API_ENDPOINTS?.ORDERS || '/api/orders';
+
+            fetch(backendUrl + ordersEndpoint + '/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showProductOrderSuccess(orderData);
+                    } else {
+                        // Show error message
+                        showNotification('Failed to place order: ' + (data.error || 'Unknown error'), 'error');
+                        placeOrderBtn.innerHTML = originalText;
+                        placeOrderBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to place order. Please try again.', 'error');
+                    placeOrderBtn.innerHTML = originalText;
+                    placeOrderBtn.disabled = false;
+                });
+        };
+
+        // Show order success
+        function showProductOrderSuccess(orderData) {
+            // Send WhatsApp message to customer
+            sendWhatsAppMessage(orderData);
+
+            // Create success modal content
+            const successContent = `
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-check-circle me-2"></i>Order Placed Successfully!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="order-success">
+                        <i class="fas fa-check-circle text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                        <h4 class="text-success mb-3">Thank You! 🎊</h4>
+                        <p class="mb-3 text-muted">Welcome to the TechZone family!</p>
+                        <p class="mb-3">Your order for <strong>${orderData.product.name}</strong> has been placed successfully!</p>
+                        <p class="mb-3">🎉 <strong>Great news!</strong> Our sales team has been notified and will contact you soon to confirm your order and discuss delivery options.</p>
+                        <p class="mb-3">📞 <strong>What happens next?</strong> You'll receive a call within the next 2-4 hours during business hours (9 AM - 6 PM).</p>
+                        <p class="mb-3">📱 <strong>WhatsApp Message:</strong> We've also sent you a confirmation message on WhatsApp!</p>
+                        
+                        <div class="order-details-summary mt-4">
+                            <h6 class="text-muted">Order Summary:</h6>
+                            <p><strong>Product:</strong> ${orderData.product.name}</p>
+                            <p><strong>Total:</strong> $${orderData.product.price}</p>
+                            <p><strong>Order ID:</strong> ${generateProductOrderId()}</p>
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Next Steps:</strong><br>
+                            1. 📞 <strong>Sales team will call you</strong> within 2-4 hours<br>
+                            2. 💳 <strong>Payment confirmation</strong> and order verification<br>
+                            3. 🚚 <strong>Delivery scheduling</strong> based on your preference<br>
+                            4. 📱 <strong>WhatsApp updates</strong> for tracking and status
+                        </div>
+                        
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>Redirecting to home page in <span id="countdown">5</span> seconds...</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="redirectToHome()">
+                        <i class="fas fa-home me-2"></i>Go to Home Now
+                    </button>
+                </div>
+            `;
+
+            // Update modal content
+            const orderModal = document.getElementById('orderModal');
+            orderModal.querySelector('.modal-content').innerHTML = successContent;
+
+            // Show the success message
+            const modal = new bootstrap.Modal(orderModal);
+            modal.show();
+
+            // Start countdown and auto-redirect
+            startCountdownAndRedirect();
+        }
+
+        // Send WhatsApp message to customer
+        function sendWhatsAppMessage(orderData) {
+            try {
+                // Format phone number (remove any non-digit characters and add country code if needed)
+                let phoneNumber = orderData.customer.phone.replace(/\D/g, '');
+                
+                // If phone number doesn't start with country code, assume US (+1)
+                if (!phoneNumber.startsWith('1') && phoneNumber.length === 10) {
+                    phoneNumber = '1' + phoneNumber;
+                }
+                
+                // Add + prefix for international format
+                phoneNumber = '+' + phoneNumber;
+
+                // Create WhatsApp message content
+                const message = `🎉 *TechZone Order Confirmation* 🎉
+
+Dear ${orderData.customer.firstName},
+
+Thank you for your order! We're excited to welcome you to the TechZone family.
+
+📦 *Order Details:*
+• Product: ${orderData.product.name}
+• Price: $${orderData.product.price}
+• Order ID: ${generateProductOrderId()}
+
+👤 *Customer Information:*
+• Name: ${orderData.customer.firstName} ${orderData.customer.lastName}
+• Email: ${orderData.customer.email}
+• Phone: ${orderData.customer.phone}
+
+📍 *Delivery Address:*
+${orderData.delivery.address}
+${orderData.delivery.city}, ${orderData.delivery.state} ${orderData.delivery.zipCode}
+${orderData.delivery.country}
+
+📞 *Next Steps:*
+Our sales team will contact you within 2-4 hours to:
+• Confirm your order details
+• Process payment
+• Schedule delivery
+
+📱 *Stay Connected:*
+You'll receive updates about your order status via WhatsApp.
+
+Thank you for choosing TechZone!
+Best regards,
+The TechZone Team
+
+#TechZone #Gaming #ComputerStore`;
+
+                // Send message via backend API
+                const backendUrl = CONFIG.BACKEND_URL;
+                const whatsappEndpoint = CONFIG.API_ENDPOINTS?.WHATSAPP || '/api/whatsapp';
+
+                fetch(backendUrl + whatsappEndpoint + '/send-message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        to: phoneNumber,
+                        message: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('WhatsApp message sent successfully:', data);
+                        showNotification('WhatsApp confirmation message sent! 📱', 'success');
+                    } else {
+                        console.warn('Failed to send WhatsApp message:', data.error);
+                        // Don't show error to user as this is not critical
+                    }
+                })
+                .catch(error => {
+                    console.error('Error sending WhatsApp message:', error);
+                    // Don't show error to user as this is not critical
+                });
+
+            } catch (error) {
+                console.error('Error in sendWhatsAppMessage:', error);
+                // Don't show error to user as this is not critical
+            }
+        }
+
+        // Generate order ID
+        function generateProductOrderId() {
+            const timestamp = Date.now().toString(36);
+            const random = Math.random().toString(36).substr(2, 5);
+            return `ORD-${timestamp}-${random}`.toUpperCase();
+        }
+
+        // Validate order form
+        function validateProductOrderForm(orderData) {
+            // Check if all required fields are filled
+            const requiredFields = [
+                orderData.customer.firstName,
+                orderData.customer.lastName,
+                orderData.customer.email,
+                orderData.customer.phone,
+                orderData.delivery.address,
+                orderData.delivery.city,
+                orderData.delivery.state,
+                orderData.delivery.zipCode,
+                orderData.delivery.country
+            ];
+
+            return requiredFields.every(field => field && field.trim() !== '') && orderData.termsAccepted;
+        }
+
+        // Show notification function for product page
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bismiss="alert" aria-label="Close"></button>
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+
+        // Make showNotification available globally
+        window.showNotification = showNotification;
+
+        // Function to redirect to home page
+        function redirectToHome() {
+            window.location.href = '../index.html';
+        }
+
+        // Function to start countdown and auto-redirect
+        function startCountdownAndRedirect() {
+            let countdown = 5;
+            const countdownElement = document.getElementById('countdown');
+
+            if (countdownElement) {
+                const countdownInterval = setInterval(() => {
+                    countdown--;
+                    countdownElement.textContent = countdown;
+
+                    if (countdown <= 0) {
+                        clearInterval(countdownInterval);
+                        redirectToHome();
+                    }
+                }, 1000);
+            }
+        }
+
+        // Make redirectToHome globally available
+        window.redirectToHome = redirectToHome;
+
+        // Initialize thumbnail functionality
+        function initThumbnails() {
+            // Thumbnail image click functionality
+            document.querySelectorAll('.thumbnail-img').forEach(img => {
+                img.addEventListener('click', function () {
+                    const mainImage = document.querySelector('.main-image img');
+                    if (mainImage) {
+                        mainImage.src = this.src;
+
+                        // Update alt text
+                        mainImage.alt = this.alt;
+                    }
+
+                    // Add active class to clicked thumbnail
+                    document.querySelectorAll('.thumbnail-img').forEach(thumb => thumb.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Add active class to first thumbnail
+            const firstThumbnail = document.querySelector('.thumbnail-img');
+            if (firstThumbnail) {
+                firstThumbnail.classList.add('active');
+            }
+        }
+    </script>
+
     <!-- Order Form Modal -->
     <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -492,7 +1002,7 @@
                                 <input type="text" class="form-control" id="lastName" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="email" class="form-label">Email Address *</label>
+                                <label for="email" class="label">Email Address *</label>
                                 <input type="email" class="form-control" id="email" required>
                             </div>
                             <div class="col-md-6">
@@ -536,6 +1046,7 @@
                                     <option value="IN">India</option>
                                     <option value="BR">Brazil</option>
                                     <option value="MX">Mexico</option>
+                                    <option value="LK">Sri Lanka</option>
                                 </select>
                             </div>
 
